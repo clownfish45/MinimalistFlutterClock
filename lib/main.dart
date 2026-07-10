@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-String getTime() {
+dynamic getTime() {
+  final dateTimeNow = new DateTime.now();
   String hours = DateTime.now().hour.toString().padLeft(2, '0');
   String minutes = DateTime.now().minute.toString().padLeft(2, '0');
   String seconds = DateTime.now().second.toString().padLeft(2, '0');
   String currentTime = '$hours:$minutes:$seconds';
-  return currentTime;
+  Map<int, dynamic> rV = {0: currentTime,1: dateTimeNow};
+  return rV;
 }
 
 class MyApp extends StatelessWidget {
@@ -20,26 +23,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Clock',
       theme: ThemeData.dark().copyWith(
         // Update the dark theme
         primaryColor: Colors.blueGrey, // Update the primary color
       ),
-      home: const MyHomePage(title: 'Clock'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, Key? key_, required this.title});
-  final String title;
+  const MyHomePage({super.key, Key? key_});
+  
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String timeVar = getTime();
+  Map<int, dynamic> get timeList => getTime();
+  String get timeVar => timeList[0];
+  String get formatted => DateFormat('MMMMEEEEd').format(timeList[1]);
   late Timer _timer;
 
   @override
@@ -50,7 +54,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter(Timer timer) {
     setState(() {
-      timeVar = getTime();
+      
+      Map<int, dynamic> timeList = getTime();
+      String timeVar = timeList[0];
+      String formatted = DateFormat('MMMMEEEEd').format(timeList[1]);
     });
   }
 
@@ -63,28 +70,25 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: true,
-        backgroundColor: Colors.blueGrey,
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Global Clock',
-              style: TextStyle(
-                fontSize: 24.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
             Text(
               timeVar,
               style: const TextStyle(
-                fontSize: 48.0,
+                fontSize: 150.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.blueGrey,
+                color: Colors.white,
+              ),
+            ),
+
+            Text(
+              formatted,
+              style: const TextStyle(
+                fontSize: 40.0,
+//                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ],
